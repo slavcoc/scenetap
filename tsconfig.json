@@ -1,0 +1,21 @@
+{
+ "compilerOptions": {
+ "target": "ES2022",
+    "module": "NodeNext",           // 👈 Set this
+    "moduleResolution": "NodeNext", // 👈 Set this
+    "esModuleInterop": true,
+    "skipLibCheck": true,           // Ensures Anthropic SDK's internal types don't throw errors
+    "strict": true,
+    "paths": {
+      "@shared/*": ["./packages/shared/src/*"],
+      "@database": ["./packages/database/src/*"]
+    }
+  },
+  "files": [],
+  "references": [
+    { "path": "packages/shared" },
+    { "path": "packages/database" },
+    { "path": "apps/frontend" },
+    { "path": "apps/backend" }
+  ]
+}

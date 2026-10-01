@@ -1,0 +1,29 @@
+{
+  "name": "sceneTapJs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": ">=10.0.0 <11.0.0"
+    }
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "check-types": "tsc --noEmit",
+    "build": "tsc && vite build",
+    "db:update": "pnpm --filter @scenetap/database db:update",
+    "db:update:dry": "pnpm --filter @scenetap/database db:update:dry",
+    "migration:plan": "pnpm --filter @scenetap/database migration:plan",
+    "migration:apply": "pnpm --filter @scenetap/database migration:apply",
+    "db:generate": "pnpm --filter @scenetap/database generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "turbo": "^2.11.5"
+  }
+}

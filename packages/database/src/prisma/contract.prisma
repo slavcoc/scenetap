@@ -1,0 +1,163 @@
+// use prisma-8
+// ── Content ──────────────────────────────────────────────────────────────
+
+model Movie {
+  id        Int      @id @default(autoincrement())
+  title     String
+  year      Int
+  runtime   Int      // minutes — shown as hint during the round
+  genre     String?
+  tier      Int      @default(2) // difficulty tier 1–3 (easy → deep cut)
+  status    MovieStatus @default(DRAFT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) // Fixed: Replaced raw sql template string with standard now()
+
+  exchanges MovieExchange[]
+  options   MovieOptions?
+  schedule  ScheduleEntry[]
+  attempts  Attempt[]
+
+  @@index([status])
+  @@index([tier])
+}
+
+enum MovieStatus {
+  DRAFT
+  APPROVED
+}
+
+model MovieExchange {
+  id       Int  @id @default(autoincrement())
+  movieId  Int
+  movie    Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+
+  minute   Int // timeline minute the exchange belongs to
+  lines    Json // [{ "speaker": "Hans", "text": "..." }]
+  tier     ExchangeTier
+  isFixed  Boolean @default(false) // part of the 3 fixed reveals?
+  poolRank Int? // recognizability rank within the free-tap pool (1 = most recognizable)
+
+  events Event[]
+
+  @@index([movieId])
+  @@index([movieId, minute])
+}
+
+enum ExchangeTier {
+  ICONIC
+  MEDIUM
+  DEEPCUT
+}
+
+model MovieOptions {
+  movieId     Int  @id
+  movie       Movie @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  distractors Json // string[] of 3 wrong titles; correct title is Movie.title
+}
+
+model ScheduleEntry {
+  id       Int      @id @default(autoincrement())
+  day      DateTime 
+  position Int      // 1–3
+  movieId  Int      @unique // a movie is scheduled exactly once, ever — never repeated
+  movie    Movie    @relation(fields: [movieId], references: [id])
+
+  @@unique([day, position])
+}
+
+// ── Players & attempts ───────────────────────────────────────────────────
+
+model Player {
+  id        String   @id @default(uuid()) 
+  email     String?  @unique
+  provider  AuthProvider @default(GUEST)
+  timezone  String   @default("UTC") // player-local midnight for day flip
+  createdAt DateTime @default(now())
+  lastSeenAt DateTime @default(now())
+
+  sessions DailySession[]
+  events   Event[]
+}
+
+enum AuthProvider {
+  GUEST
+  GOOGLE
+  EMAIL
+}
+
+model Attempt {
+  id        Int          @id @default(autoincrement())
+  sessionId Int
+  session   DailySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  movieId Int
+  movie   Movie @relation(fields: [movieId], references: [id])
+
+  reveals Json // [{ "exchangeId": 1, "fixed": true }] — accumulating transcript
+  freeTapsUsed Int @default(0) // scoring: max(40, 100 − 15 × freeTapsUsed)
+
+  guess   String? // guessed title (null = not guessed yet)
+  correct Boolean?
+  score   Int? // 0 if wrong; 40–100 if right
+
+  finishedAt DateTime? // set when the movie is answered → resume state
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @default(now()) // Fixed: Replaced raw sql template string with standard now()
+
+  @@unique([sessionId, movieId])
+  @@index([movieId])
+}
+
+// ── Daily round (session) ───────────────────────────────────────────────
+
+model DailySession {
+  id       Int    @id @default(autoincrement())
+  playerId String
+  player   Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  day     DateTime 
+  ordinal Int      @default(1) // 1 = free play, 2+ = paid extra attempt
+
+  status     SessionStatus @default(IN_PROGRESS)
+  score      Int? // total /300, set when finished
+  finishedAt DateTime? // all 3 movies answered → session complete
+
+  attempts Attempt[]
+
+  @@unique([playerId, day, ordinal])
+  @@index([playerId, day])
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  FINISHED
+}
+
+// ── Analytics (calibration data) ────────────────────────────────────────
+
+model Event {
+  id        Int       @id @default(autoincrement())
+  playerId  String
+  player    Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  day       DateTime  
+  type      EventType
+  movieId   Int?
+  exchangeId Int?
+  exchange  MovieExchange? @relation(fields: [exchangeId], references: [id], onDelete: SetNull)
+
+  payload Json // e.g. reveal counts, correct/wrong, session duration, taps used
+  createdAt DateTime @default(now())
+
+  @@index([day, type])
+  @@index([exchangeId])
+  @@index([movieId])
+}
+
+enum EventType {
+  TAP
+  GUESS
+  SHARE
+  ROUND_COMPLETE
+  SESSION_COMPLETE
+}

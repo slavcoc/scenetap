@@ -1,0 +1,12 @@
+.turbo
+node_modules
+dist
+
+# env
+.env
+.env.local
+.env.*.local
+
+# misc
+.DS_Store
+*.tsbuildinfo
