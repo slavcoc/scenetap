@@ -897,6 +897,13 @@
                   "kind": "scalar"
                 }
               },
+              "passwordHash": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "provider": {
                 "nullable": false,
                 "type": {
@@ -963,6 +970,9 @@
                 },
                 "lastSeenAt": {
                   "column": "lastSeenAt"
+                },
+                "passwordHash": {
+                  "column": "passwordHash"
                 },
                 "provider": {
                   "column": "provider"
@@ -1739,6 +1749,11 @@
                   "nativeType": "timestamptz",
                   "nullable": false
                 },
+                "passwordHash": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": true
+                },
                 "provider": {
                   "codecId": "pg/text@1",
                   "default": {
@@ -1892,7 +1907,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "3e2f892c2427f2b3e7ccf9c48bd6a89116e9afbdcc2ff177d41df4d1076103ea"
+    "storageHash": "6a9dcc410ef961c7933b10e99376b45513dde828b6956b23f11107cb0b48d44c"
   },
   "execution": {
     "executionHash": "7c4b6f095a668a42af2b7e2566d9388a92828734cdddc102a04bb5cd3c7ac2e4",

@@ -6,11 +6,19 @@ import { authProviderEnum } from './enums.validator';
 // Body-only schemas — pair with the validateBody middleware.
 
 // POST /api/players (guest registration / sign-in)
-export const createPlayerSchema = z.object({
-  email: z.email('Invalid email address'),
-  provider: authProviderEnum.default('GUEST'),
-  timezone: z.string().trim().min(1).default('UTC'),
-});
+// provider EMAIL requires a password; guest/social sign-ins omit it.
+export const createPlayerSchema = z
+  .object({
+    email: z.email('Invalid email address'),
+    password: z.string().min(8, 'Password must be at least 8 characters').max(128).optional(),
+    provider: authProviderEnum.default('GUEST'),
+    timezone: z.string().trim().min(1).default('UTC'),
+  })
+  .superRefine((data, ctx) => {
+    if (data.provider === 'EMAIL' && !data.password) {
+      ctx.addIssue({ code: 'custom', message: 'Password is required for EMAIL provider', path: ['password'] });
+    }
+  });
 
 // PATCH /api/players/:id
 export const updatePlayerSchema = z.object({
@@ -19,5 +27,18 @@ export const updatePlayerSchema = z.object({
   timezone: z.string().trim().min(1).optional(),
 });
 
+// POST /users/login/password
+export const loginWithPasswordSchema = z.object({
+  email: z.email('Invalid email address'),
+  password: z.string().min(1, 'Password is required').max(128),
+});
+
+// POST /users/login/google
+export const loginWithGoogleSchema = z.object({
+  idToken: z.string().min(1, 'Google ID token is required'),
+});
+
 export type CreatePlayerInput = z.infer<typeof createPlayerSchema>;
 export type UpdatePlayerInput = z.infer<typeof updatePlayerSchema>;
+export type LoginWithPasswordInput = z.infer<typeof loginWithPasswordSchema>;
+export type LoginWithGoogleInput = z.infer<typeof loginWithGoogleSchema>;

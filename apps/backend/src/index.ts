@@ -2,11 +2,14 @@ import express, { Request, Response } from 'express';
 import Anthropic from '@anthropic-ai/sdk';
 import { createPlayerSchema, validateBody } from '@shared/types';
 import type { CreatePlayerInput } from '@shared/types';
+import { routes } from './routes';
+import { errorHandler } from './middlewares/error-handler';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(routes);
 
 app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'Server is running perfectly!' });
@@ -117,3 +120,5 @@ if (!textOutput) {
     res.status(500).json({ error: 'Failed to process the script with Claude API.' });
   }
 });
+
+app.use(errorHandler);

@@ -72,6 +72,7 @@ model Player {
   email     String?  @unique
   provider  AuthProvider @default(GUEST)
   timezone  String   @default("UTC") // player-local midnight for day flip
+  passwordHash String? // bcrypt hash, set only for EMAIL-provider accounts
   createdAt DateTime @default(now())
   lastSeenAt DateTime @default(now())
 
