@@ -17,11 +17,13 @@
     "@database": "workspace:*",
     "@shared/types": "workspace:*",
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
     "express": "^5.2.1",
     "google-auth-library": "^11.1.0",
     "tsx": "^4.23.15"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^20",
     "tsc-watch": "^7.2.1",

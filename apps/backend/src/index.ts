@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import cors from 'cors';
 import Anthropic from '@anthropic-ai/sdk';
 import { createPlayerSchema, validateBody } from '@shared/types';
 import type { CreatePlayerInput } from '@shared/types';
@@ -9,6 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
+app.use(cors());
 app.use(routes);
 
 app.get('/health', (req: Request, res: Response) => {
