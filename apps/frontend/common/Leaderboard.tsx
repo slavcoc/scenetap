@@ -48,10 +48,10 @@ export function Leaderboard() {
   const rows = entries ?? SAMPLE_BOARD[window];
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-8 backdrop-blur">
+    <div className="rounded-2xl border border-white/10 bg-zinc-900 p-8">
       <div className="mb-6 flex items-center justify-between gap-4">
         <h3 className="text-lg font-semibold">Points board</h3>
-        <div className="grid grid-cols-2 rounded-xl bg-zinc-800/70 p-1 text-sm font-medium" role="tablist">
+        <div className="grid grid-cols-2 rounded-xl bg-zinc-800 p-1 text-sm font-medium" role="tablist">
           {(["today", "week"] as const).map((w) => (
             <button
               key={w}
@@ -81,7 +81,7 @@ export function Leaderboard() {
       ) : (
         <ol className="space-y-1">
           {rows.map((r) => (
-            <li key={r.rank} className="flex items-center gap-4 rounded-xl px-4 py-2.5 odd:bg-white/[.03]">
+            <li key={r.rank} className="flex items-center gap-4 rounded-xl px-4 py-2.5 odd:bg-zinc-800">
               <span
                 className={`w-7 text-center font-mono text-sm font-semibold ${
                   r.rank === 1 ? "text-amber-300" : r.rank <= 3 ? "text-zinc-200" : "text-zinc-500"

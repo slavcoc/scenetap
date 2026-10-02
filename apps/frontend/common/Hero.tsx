@@ -1,4 +1,5 @@
-import { DemoMovie } from "./DemoMovie";
+import { demoRound } from "./demo-round";
+import { MovieRound } from "./MovieRound";
 
 export function Hero() {
   return (
@@ -23,23 +24,32 @@ export function Hero() {
             exchanges, recognise the film, and score as few taps as possible. Try the demo —
             it&apos;s the real game, minus the clock.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a
-              href="#leaderboard"
-              className="rounded-xl bg-amber-400 px-6 py-3 font-semibold text-zinc-950 transition hover:bg-amber-300"
-            >
-              See today&apos;s board
-            </a>
+          <div className="mt-8 space-y-6">
             <a
               href="#"
-              className="text-sm font-medium text-zinc-300 underline-offset-4 transition hover:text-white hover:underline"
+              className="inline-block rounded-xl bg-amber-400 px-8 py-3.5 text-base font-semibold text-zinc-950 transition hover:bg-amber-300"
             >
-              Sign in to keep your score
+              Play today&apos;s round
             </a>
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="#leaderboard"
+                className="px-1 py-2 text-sm font-medium text-zinc-300 transition hover:text-white"
+              >
+                See today&apos;s board
+              </a>
+              <a
+                href="#"
+                className="px-1 py-2 text-sm font-medium text-zinc-300 transition hover:text-white"
+              >
+                Sign in to keep your score
+              </a>
+            </div>
           </div>
         </div>
 
-        <DemoMovie />
+        {/* Landing demo — same MovieRound the game uses, fed with demo data */}
+        <MovieRound {...demoRound} label="Demo movie" showSteps allowReset />
       </div>
     </section>
   );
