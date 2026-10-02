@@ -8,6 +8,9 @@
     "check-types": {
       "dependsOn": ["^check-types"]
     },
+    "generate": {
+      "cache": false
+    },
     "dev": {
       "persistent": true,
       "cache": false,

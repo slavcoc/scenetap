@@ -1,8 +1,5 @@
 {
  "compilerOptions": {
- "target": "ES2022",
-    "module": "NodeNext",           // 👈 Set this
-    "moduleResolution": "NodeNext", // 👈 Set this
     "esModuleInterop": true,
     "skipLibCheck": true,           // Ensures Anthropic SDK's internal types don't throw errors
     "strict": true,
