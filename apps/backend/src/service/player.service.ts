@@ -1,5 +1,5 @@
 import {db, PrismaClientKnownRequestError, Temporal} from "@database";
-import type { CreatePlayerInput, LoginWithGoogleInput, LoginWithPasswordInput } from "@shared/types";
+import type { CreatePlayerInput, LoginWithGoogleInput, LoginWithPasswordInput, SignupWithPasswordInput } from "@shared/types";
 import bcrypt from "bcryptjs";
 import { OAuth2Client } from "google-auth-library";
 import { AppError } from "../app-error";
@@ -30,6 +30,11 @@ export const playerService = {
       }
       throw e;
     }
+  },
+
+  async signupWithPassword(input: SignupWithPasswordInput) {
+    // Reuses create() so hashing and the 409 duplicate-email handling stay in one place.
+    return playerService.create({ ...input, provider: "EMAIL" });
   },
 
   async loginWithPassword({ email, password }: LoginWithPasswordInput) {

@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import type { CreatePlayerInput, LoginWithGoogleInput, LoginWithPasswordInput } from "@shared/types";
+import type { CreatePlayerInput, LoginWithGoogleInput, LoginWithPasswordInput, SignupWithPasswordInput } from "@shared/types";
 import { playerService } from "../service/player.service";
 
 /** Remove fields that must never leave the server (e.g. bcrypt hash). */
@@ -9,6 +9,12 @@ export const playerController = {
   create: (async (req, res) => {
     const input = req.body as CreatePlayerInput;
     const player = await playerService.create(input);
+    res.status(201).json(safePlayer(player));
+  }) as RequestHandler,
+
+  signupWithPassword: (async (req, res) => {
+    const input = req.body as SignupWithPasswordInput;
+    const player = await playerService.signupWithPassword(input);
     res.status(201).json(safePlayer(player));
   }) as RequestHandler,
 

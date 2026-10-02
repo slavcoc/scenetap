@@ -27,6 +27,13 @@ export const updatePlayerSchema = z.object({
   timezone: z.string().trim().min(1).optional(),
 });
 
+// POST /users/signup/email — provider is fixed to EMAIL server-side
+export const signupWithPasswordSchema = z.object({
+  email: z.email('Invalid email address'),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(128),
+  timezone: z.string().trim().min(1).default('UTC'),
+});
+
 // POST /users/login/password
 export const loginWithPasswordSchema = z.object({
   email: z.email('Invalid email address'),
@@ -40,5 +47,6 @@ export const loginWithGoogleSchema = z.object({
 
 export type CreatePlayerInput = z.infer<typeof createPlayerSchema>;
 export type UpdatePlayerInput = z.infer<typeof updatePlayerSchema>;
+export type SignupWithPasswordInput = z.infer<typeof signupWithPasswordSchema>;
 export type LoginWithPasswordInput = z.infer<typeof loginWithPasswordSchema>;
 export type LoginWithGoogleInput = z.infer<typeof loginWithGoogleSchema>;
